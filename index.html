@@ -3,75 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบเช็คชื่อนักเรียน โรงเรียนบ้านวังปริง</title>
+    <title>ระบบเช็คชื่อนักเรียน โรงเรียนบ้านวังปริง (ออนไลน์)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Sarabun', sans-serif;
-        }
-        .view, .modal {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-            will-change: opacity, transform;
-        }
-        .view.hidden, .modal.hidden {
-            opacity: 0;
-            transform: scale(0.95);
-            pointer-events: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-        }
-        .modal-content {
-             transition: transform 0.3s ease-in-out;
-        }
-        .modal.hidden .modal-content {
-            transform: translateY(-20px);
-        }
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            cursor: pointer;
-            filter: invert(0.5) brightness(1.5);
-        }
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #reportPrintArea, #reportPrintArea * {
-                visibility: visible;
-            }
-            #reportPrintArea {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
-            @page {
-                size: A4 landscape;
-                margin: 20mm;
-            }
-            table {
-                font-size: 10px;
-            }
-            h2 {
-                font-size: 16px;
-            }
-        }
+        body { font-family: 'Sarabun', sans-serif; }
+        .view, .modal { transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; will-change: opacity, transform; }
+        .view.hidden, .modal.hidden { opacity: 0; transform: scale(0.95); pointer-events: none; position: absolute; top: 0; left: 0; right: 0; }
+        .modal-content { transition: transform 0.3s ease-in-out; }
+        .modal.hidden .modal-content { transform: translateY(-20px); }
+        input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; filter: invert(0.5) brightness(1.5); }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @media print { body * { visibility: hidden; } #reportPrintArea, #reportPrintArea * { visibility: visible; } #reportPrintArea { position: absolute; left: 0; top: 0; width: 100%; } @page { size: A4 landscape; margin: 20mm; } table { font-size: 10px; } h2 { font-size: 16px; } }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800">
 
-    <div id="app-container" class="max-w-6xl mx-auto p-4 min-h-screen">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-80 flex flex-col items-center justify-center z-50">
+        <div class="loader"></div>
+        <p class="mt-4 text-slate-600">กำลังเชื่อมต่อฐานข้อมูล...</p>
+    </div>
 
+    <div id="app-container" class="max-w-6xl mx-auto p-4 min-h-screen">
+        <!-- Views (Class List, Student List, Report) go here, same as before -->
         <!-- View 1: Class List -->
         <div id="classListView" class="view w-full">
             <header class="bg-white shadow-md rounded-xl p-6 mb-6">
                 <div class="text-center mb-4">
                     <h1 class="text-2xl font-bold text-blue-600">โรงเรียนบ้านวังปริง</h1>
-                    <p class="text-slate-500 mt-1">ระบบเช็คชื่อนักเรียน</p>
+                    <p class="text-slate-500 mt-1">ระบบเช็คชื่อนักเรียน (ออนไลน์)</p>
                 </div>
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 bg-slate-50 p-4 rounded-lg">
                     <label for="datePicker" class="font-semibold text-slate-700">เลือกวันที่:</label>
@@ -121,56 +86,35 @@
     </div>
     
     <div id="reportPrintArea" class="hidden"></div>
-
-    <!-- Modals -->
+    <!-- Modals are the same as before -->
     <div id="addStudentModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"><div class="modal-content bg-white rounded-xl shadow-lg p-6 w-full max-w-sm"><h2 class="text-lg font-bold mb-4">เพิ่มนักเรียนใหม่</h2><div class="mb-4"><label for="studentNameInput" class="block text-sm font-medium text-slate-700 mb-1">ชื่อ-นามสกุล</label><input type="text" id="studentNameInput" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="เช่น สมศักดิ์ รักเรียน"></div><div class="mb-4"><label for="studentPrefixSelect" class="block text-sm font-medium text-slate-700 mb-1">คำนำหน้าชื่อ</label><select id="studentPrefixSelect" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><option>เด็กชาย</option><option>เด็กหญิง</option><option>นาย</option><option>นางสาว</option></select></div><div class="flex justify-end space-x-3"><button id="cancelAddStudent" class="px-4 py-2 bg-slate-200 text-slate-800 rounded-lg hover:bg-slate-300">ยกเลิก</button><button id="saveStudent" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">บันทึก</button></div></div></div>
     <div id="alertModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"><div class="modal-content bg-white rounded-xl shadow-lg p-6 w-full max-w-sm"><h2 id="alertTitle" class="text-lg font-bold mb-4"></h2><p id="alertMessage" class="text-slate-600 mb-6"></p><div id="alertButtons" class="flex justify-end space-x-3"></div></div></div>
 
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, addDoc, deleteDoc, onSnapshot, collection, query, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    <script>
-        // --- DATA MODEL ---
-        let schoolData = {
-            'อนุบาล 2': [], 'อนุบาล 3': [],
-            'ประถมศึกษาปีที่ 1': [], 'ประถมศึกษาปีที่ 2': [], 'ประถมศึกษาปีที่ 3': [], 'ประถมศึกษาปีที่ 4': [], 'ประถมศึกษาปีที่ 5': [], 'ประถมศึกษาปีที่ 6': [],
-            'มัธยมศึกษาปีที่ 1': [], 'มัธยมศึกษาปีที่ 2': [], 'มัธยมศึกษาปีที่ 3': [],
-        };
-        let attendanceData = {};
+        // --- FIREBASE SETUP ---
+        // These variables are provided by the environment.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'student-attendance-app-th';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
         
-        function populateSampleData() {
-            const sampleMaleNames = ["สมชาย", "มานะ", "วีระ", "กิตติ", "ธนพล", "ณัฐวุฒิ", "พงศกร", "จิรายุ", "กรวิชญ์"];
-            const sampleFemaleNames = ["สมหญิง", "ชูใจ", "ปิติ", "จิราพร", "พิมพ์ชนก", "ขวัญข้าว", "วิภาวี", "ปภาวรินทร์"];
-            const sampleSurnames = ["รักเรียน", "ตั้งใจ", "อดทน", "ยินดี", "กล้าหาญ", "ใฝ่รู้", "แสงทอง", "ใจดี", "ศรีสุข", "คงมั่น", "นามสกุล"];
-            let studentIdCounter = 101;
+        let db, auth;
+        let classesCol, attendanceCol;
 
-            for (const className in schoolData) {
-                schoolData[className] = []; // Clear the class first
-                const studentCount = Math.floor(Math.random() * 6) + 5; // 5 to 10 students
-
-                for (let i = 0; i < studentCount; i++) {
-                    const isBoy = Math.random() > 0.5;
-                    const isHighSchool = className.startsWith('มัธยม');
-                    let prefix = '';
-                    let name = '';
-
-                    if (isBoy) {
-                        prefix = isHighSchool ? 'นาย' : 'เด็กชาย';
-                        name = sampleMaleNames[Math.floor(Math.random() * sampleMaleNames.length)];
-                    } else {
-                        prefix = isHighSchool ? 'นางสาว' : 'เด็กหญิง';
-                        name = sampleFemaleNames[Math.floor(Math.random() * sampleFemaleNames.length)];
-                    }
-                    const surname = sampleSurnames[Math.floor(Math.random() * sampleSurnames.length)];
-
-                    schoolData[className].push({
-                        id: studentIdCounter++,
-                        name: `${prefix} ${name} ${surname}` // Full name with prefix
-                    });
-                }
-            }
-        }
-        populateSampleData();
+        // --- LOCAL DATA CACHE ---
+        // We keep a local copy of data for faster UI rendering
+        let schoolData = {};
+        let attendanceData = {};
 
         // --- DOM ELEMENTS ---
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const allViews = [document.getElementById('classListView'), document.getElementById('studentListView'), document.getElementById('reportView')];
+        // ... (rest of the DOM elements are the same as before)
         const classListView = document.getElementById('classListView');
         const studentListView = document.getElementById('studentListView');
         const reportView = document.getElementById('reportView');
@@ -214,10 +158,10 @@
         };
 
         const getFormattedDate = (date) => date.toISOString().split('T')[0];
-        
-        // --- VIEW NAVIGATION ---
+
+        // --- VIEW & MODAL & UI FUNCTIONS (DEFINED BEFORE INITIALIZE) ---
         function showView(viewToShow) {
-            [classListView, studentListView, reportView].forEach(view => {
+            allViews.forEach(view => {
                 if (view === viewToShow) {
                     view.classList.remove('hidden');
                 } else {
@@ -227,108 +171,177 @@
             window.scrollTo(0, 0);
         }
 
-        // --- REPORTING FUNCTIONS ---
+        function showAlert(title, message, buttons) {
+            alertTitle.textContent = title;
+            alertMessage.textContent = message;
+            alertButtons.innerHTML = '';
+            if (buttons) {
+                buttons.forEach(btn => {
+                    const buttonEl = document.createElement('button');
+                    buttonEl.textContent = btn.text;
+                    buttonEl.className = btn.class;
+                    buttonEl.onclick = () => {
+                        hideAlertModal();
+                        if (btn.onClick) btn.onClick();
+                    };
+                    alertButtons.appendChild(buttonEl);
+                });
+            } else {
+                const okButton = document.createElement('button');
+                okButton.textContent = 'ตกลง';
+                okButton.className = 'px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600';
+                okButton.onclick = hideAlertModal;
+                alertButtons.appendChild(okButton);
+            }
+            alertModal.classList.remove('hidden');
+        }
+
+        const hideAlertModal = () => alertModal.classList.add('hidden');
+
+        function showAddStudentModal() {
+            studentNameInput.value = '';
+            studentPrefixSelect.value = currentClassName.startsWith('มัธยม') ? 'นาย' : 'เด็กชาย';
+            addStudentModal.classList.remove('hidden');
+            studentNameInput.focus();
+        }
+
+        const hideAddStudentModal = () => addStudentModal.classList.add('hidden');
+
         function setupReportControls() {
-            reportClassSelect.innerHTML = Object.keys(schoolData).map(c => `<option value="${c}">${c}</option>`).join('');
-            
+            reportClassSelect.innerHTML = Object.keys(schoolData).sort((a, b) => a.localeCompare(b, 'th')).map(c => `<option value="${c}">${c}</option>`).join('');
             const months = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
             reportMonthSelect.innerHTML = months.map((m, i) => `<option value="${i}">${m}</option>`).join('');
-            
             const currentYear = new Date().getFullYear();
             reportYearSelect.innerHTML = [currentYear, currentYear - 1].map(y => `<option value="${y}">${y + 543}</option>`).join('');
-
             reportMonthSelect.value = currentDate.getMonth();
             reportYearSelect.value = currentDate.getFullYear();
         }
 
-        function generateReportTable() {
-            const className = reportClassSelect.value;
-            const month = parseInt(reportMonthSelect.value);
-            const year = parseInt(reportYearSelect.value);
-            const students = schoolData[className];
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
+        // --- FIRESTORE DATA FUNCTIONS ---
+        async function addStudent(className, studentName) {
+            const classRef = doc(db, `artifacts/${appId}/public/data/classes/${className}`);
+            const newStudent = { id: Date.now(), name: studentName };
+            const classDoc = await getDoc(classRef);
+            const students = classDoc.exists() ? classDoc.data().students : [];
+            students.push(newStudent);
+            await setDoc(classRef, { students: students }, { merge: true });
+        }
 
-            let tableHTML = `<h2 class="text-xl font-bold mb-2 text-center">รายงานการมาเรียน ประจำเดือน ${reportMonthSelect.options[month].text} พ.ศ. ${year + 543}</h2>`;
-            tableHTML += `<h3 class="text-lg font-semibold mb-4 text-center">ชั้น ${className}</h3>`;
-            tableHTML += `<table class="w-full border-collapse text-xs text-center"><thead><tr class="bg-slate-100">`;
-            tableHTML += `<th class="border p-1">ชื่อ-นามสกุล</th>`;
-            for (let day = 1; day <= daysInMonth; day++) {
-                tableHTML += `<th class="border p-1 w-6">${day}</th>`;
+        async function deleteStudent(className, studentId) {
+            const classRef = doc(db, `artifacts/${appId}/public/data/classes/${className}`);
+            const classDoc = await getDoc(classRef);
+            if (classDoc.exists()) {
+                const students = classDoc.data().students.filter(s => s.id !== studentId);
+                await setDoc(classRef, { students: students });
             }
-            Object.keys(statusStyles).filter(s => s !== 'ว่าง').forEach(status => {
-                tableHTML += `<th class="border p-1 bg-[${statusStyles[status].color}] text-white">${statusStyles[status].short}</th>`;
-            });
-            tableHTML += `</tr></thead><tbody>`;
+        }
 
-            students.forEach(student => {
-                const summary = { 'มาเรียน': 0, 'ขาด': 0, 'ลา': 0, 'สาย': 0 };
-                tableHTML += `<tr><td class="border p-1 text-left">${student.name}</td>`;
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const date = new Date(year, month, day);
-                    const dateString = getFormattedDate(date);
-                    const status = attendanceData[dateString]?.[className]?.[student.id] || 'ว่าง';
-                    if (summary[status] !== undefined) summary[status]++;
-                    tableHTML += `<td class="border p-1" style="background-color:${statusStyles[status]?.color || '#fff'}">${statusStyles[status]?.short || '-'}</td>`;
+        async function updateAttendanceStatus(className, studentId, status) {
+            const dateString = getFormattedDate(currentDate);
+            const attendanceRef = doc(db, `artifacts/${appId}/public/data/attendance/${dateString}`);
+            await setDoc(attendanceRef, { [className]: { [studentId]: status } }, { merge: true });
+        }
+        
+        async function getOrInitAttendanceForDate(dateString) {
+            const attendanceRef = doc(db, `artifacts/${appId}/public/data/attendance/${dateString}`);
+            const docSnap = await getDoc(attendanceRef);
+            if (!docSnap.exists()) {
+                let initialAttendance = {};
+                for (const className in schoolData) {
+                    initialAttendance[className] = {};
+                    if(schoolData[className] && schoolData[className].length > 0) {
+                        schoolData[className].forEach(student => {
+                            initialAttendance[className][student.id] = 'มาเรียน';
+                        });
+                    }
                 }
-                Object.keys(summary).forEach(status => {
-                    tableHTML += `<td class="border p-1 font-semibold">${summary[status]}</td>`;
+                await setDoc(attendanceRef, initialAttendance);
+                attendanceData[dateString] = initialAttendance;
+            } else {
+                 attendanceData[dateString] = docSnap.data();
+            }
+        }
+
+        // --- DATA SEEDING ---
+        async function seedInitialDataIfNeeded() {
+            const classDocs = await getDocs(classesCol);
+            if (classDocs.empty) {
+                console.log("No classes found. Seeding initial data...");
+                loadingOverlay.querySelector('p').textContent = 'กำลังสร้างข้อมูลเริ่มต้น...';
+                const batch = writeBatch(db);
+                const initialClasses = {
+                    'อนุบาล 2': [], 'อนุบาล 3': [], 'ประถมศึกษาปีที่ 1': [], 'ประถมศึกษาปีที่ 2': [], 
+                    'ประถมศึกษาปีที่ 3': [], 'ประถมศึกษาปีที่ 4': [], 'ประถมศึกษาปีที่ 5': [], 'ประถมศึกษาปีที่ 6': [],
+                    'มัธยมศึกษาปีที่ 1': [], 'มัธยมศึกษาปีที่ 2': [], 'มัธยมศึกษาปีที่ 3': [],
+                };
+                
+                const sampleMaleNames = ["สมชาย", "มานะ", "วีระ", "กิตติ", "ธนพล", "ณัฐวุฒิ", "พงศกร", "จิรายุ", "กรวิชญ์"];
+                const sampleFemaleNames = ["สมหญิง", "ชูใจ", "ปิติ", "จิราพร", "พิมพ์ชนก", "ขวัญข้าว", "วิภาวี", "ปภาวรินทร์"];
+                const sampleSurnames = ["รักเรียน", "ตั้งใจ", "อดทน", "ยินดี", "กล้าหาญ", "ใฝ่รู้", "แสงทอง", "ใจดี", "ศรีสุข", "คงมั่น"];
+                let studentIdCounter = 101;
+
+                for (const className in initialClasses) {
+                    const studentCount = Math.floor(Math.random() * 6) + 5;
+                    let students = [];
+                    for (let i = 0; i < studentCount; i++) {
+                        const isBoy = Math.random() > 0.5;
+                        const isHighSchool = className.startsWith('มัธยม');
+                        let prefix = isBoy ? (isHighSchool ? 'นาย' : 'เด็กชาย') : (isHighSchool ? 'นางสาว' : 'เด็กหญิง');
+                        let name = isBoy ? sampleMaleNames[Math.floor(Math.random() * sampleMaleNames.length)] : sampleFemaleNames[Math.floor(Math.random() * sampleFemaleNames.length)];
+                        const surname = sampleSurnames[Math.floor(Math.random() * sampleSurnames.length)];
+                        students.push({ id: studentIdCounter++, name: `${prefix} ${name} ${surname}` });
+                    }
+                    const classRef = doc(db, `artifacts/${appId}/public/data/classes/${className}`);
+                    batch.set(classRef, { students: students });
+                }
+                await batch.commit();
+                console.log("Initial data seeded.");
+            }
+        }
+
+        // --- LISTENERS ---
+        function setupListeners() {
+            onSnapshot(query(classesCol), (snapshot) => {
+                let newSchoolData = {};
+                snapshot.forEach(doc => {
+                    newSchoolData[doc.id] = doc.data().students || [];
                 });
-                tableHTML += `</tr>`;
+                schoolData = newSchoolData;
+                if (classListView.offsetParent !== null) renderClassList();
+                if (studentListView.offsetParent !== null) renderStudentList(currentClassName);
+                if (reportView.offsetParent !== null) generateReportTable();
             });
 
-            tableHTML += `</tbody></table>`;
-            reportTableContainer.innerHTML = tableHTML;
-        }
-        
-        function printReport() {
-            reportPrintArea.innerHTML = reportTableContainer.innerHTML;
-            window.print();
-            reportPrintArea.innerHTML = '';
-        }
-
-        function exportReportToCsv() {
-            const className = reportClassSelect.value;
-            const month = parseInt(reportMonthSelect.value);
-            const year = parseInt(reportYearSelect.value);
-            const students = schoolData[className];
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // \uFEFF for BOM to support Thai in Excel
-            
-            const headers = ["ชื่อ-นามสกุล", ...Array.from({length: daysInMonth}, (_, i) => i + 1), ...Object.keys(statusStyles).filter(s => s !== 'ว่าง').map(s => statusStyles[s].text)];
-            csvContent += headers.join(',') + '\r\n';
-
-            students.forEach(student => {
-                const row = [student.name];
-                const summary = { 'มาเรียน': 0, 'ขาด': 0, 'ลา': 0, 'สาย': 0 };
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const date = new Date(year, month, day);
-                    const dateString = getFormattedDate(date);
-                    const status = attendanceData[dateString]?.[className]?.[student.id] || 'ว่าง';
-                    if (summary[status] !== undefined) summary[status]++;
-                    row.push(statusStyles[status]?.short || '-');
-                }
-                row.push(...Object.values(summary));
-                csvContent += `"${row.join('","')}"\r\n`;
+            const dateString = getFormattedDate(currentDate);
+            const attendanceDocRef = doc(attendanceCol, dateString);
+            onSnapshot(attendanceDocRef, (doc) => {
+                attendanceData[dateString] = doc.exists() ? doc.data() : {};
+                 if (classListView.offsetParent !== null) renderClassList();
+                 if (studentListView.offsetParent !== null) renderStudentList(currentClassName);
             });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `report-${className.replace(/ /g,"_")}-${year}-${month+1}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
         }
-        
-        function getOrInitAttendanceForDate(dateString) { if (!attendanceData[dateString]) { attendanceData[dateString] = {}; for (const className in schoolData) { attendanceData[dateString][className] = {}; schoolData[className].forEach(student => { attendanceData[dateString][className][student.id] = 'มาเรียน'; }); } } return attendanceData[dateString]; }
-        function showAlert(title, message, buttons) { alertTitle.textContent = title; alertMessage.textContent = message; alertButtons.innerHTML = ''; if (buttons) { buttons.forEach(btn => { const buttonEl = document.createElement('button'); buttonEl.textContent = btn.text; buttonEl.className = btn.class; buttonEl.onclick = () => { hideAlertModal(); if(btn.onClick) btn.onClick(); }; alertButtons.appendChild(buttonEl); }); } else { const okButton = document.createElement('button'); okButton.textContent = 'ตกลง'; okButton.className = 'px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600'; okButton.onclick = hideAlertModal; alertButtons.appendChild(okButton); } alertModal.classList.remove('hidden'); }
-        const hideAlertModal = () => alertModal.classList.add('hidden');
-        function createOrUpdateChart(className) { const canvasId = 'chart-' + className.replace(/[\s/]/g, '-'); const canvas = document.getElementById(canvasId); if (!canvas) return; const ctx = canvas.getContext('2d'); const dateString = getFormattedDate(currentDate); const classAttendance = attendanceData[dateString]?.[className] || {}; const summary = { 'มาเรียน': 0, 'ขาด': 0, 'ลา': 0, 'สาย': 0 }; const studentIdsInClass = schoolData[className].map(s => s.id); studentIdsInClass.forEach(id => { const status = classAttendance[id] || 'มาเรียน'; summary[status]++; }); const chartData = { labels: Object.keys(summary), datasets: [{ data: Object.values(summary), backgroundColor: Object.values(statusStyles).filter(s=>s.text!=='ว่าง').map(s => s.color) }] }; if (charts[canvasId]) { charts[canvasId].data = chartData; charts[canvasId].update(); } else { charts[canvasId] = new Chart(ctx, { type: 'bar', data: chartData, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, plugins: { legend: { display: false } } } }); } }
-        function renderClassList() { classListContainer.innerHTML = ''; summaryHeader.textContent = `สรุปข้อมูลรายชั้นเรียน วันที่ ${currentDate.toLocaleDateString('th-TH', { dateStyle: 'long' })}`; Object.keys(schoolData).forEach(className => { const studentCount = schoolData[className].length; const canvasId = 'chart-' + className.replace(/[\s/]/g, '-'); const card = document.createElement('div'); card.className = 'bg-white p-4 rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer flex flex-col'; card.innerHTML = `<div><h3 class="font-bold text-lg text-slate-800">${className}</h3><p class="text-sm text-slate-500">${studentCount} คน</p></div><div class="mt-4 h-32 flex-grow"><canvas id="${canvasId}"></canvas></div>`; card.addEventListener('click', () => { currentClassName = className; renderStudentList(className); showView(studentListView); }); classListContainer.appendChild(card); setTimeout(() => createOrUpdateChart(className), 0); }); }
+
+        // --- UI Rendering Functions ---
+        function renderClassList() {
+            classListContainer.innerHTML = '';
+            summaryHeader.textContent = `สรุปข้อมูลรายชั้นเรียน วันที่ ${currentDate.toLocaleDateString('th-TH', { dateStyle: 'long' })}`;
+            const sortedClassNames = Object.keys(schoolData).sort((a, b) => a.localeCompare(b, 'th'));
+
+            sortedClassNames.forEach(className => {
+                const students = schoolData[className] || [];
+                const studentCount = students.length;
+                const canvasId = 'chart-' + className.replace(/[\s/]/g, '-');
+                const card = document.createElement('div');
+                card.className = 'bg-white p-4 rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer flex flex-col';
+                card.innerHTML = `<div><h3 class="font-bold text-lg text-slate-800">${className}</h3><p class="text-sm text-slate-500">${studentCount} คน</p></div><div class="mt-4 h-32 flex-grow"><canvas id="${canvasId}"></canvas></div>`;
+                card.addEventListener('click', () => { currentClassName = className; renderStudentList(className); showView(studentListView); });
+                classListContainer.appendChild(card);
+                setTimeout(() => createOrUpdateChart(className), 0);
+            });
+        }
         
         function renderStudentList(className) {
-            const students = schoolData[className];
+            const students = schoolData[className] || [];
             const dateString = getFormattedDate(currentDate);
             const classAttendance = attendanceData[dateString]?.[className] || {};
             studentListContainer.innerHTML = '';
@@ -340,58 +353,110 @@
                     const studentStatus = classAttendance[student.id] || 'มาเรียน';
                     const currentStatusStyle = statusStyles[studentStatus];
                     const li = document.createElement('li');
-                    // FIX: Make layout responsive for mobile. Stack vertically on small screens.
                     li.className = 'bg-white p-3 rounded-lg shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3';
-                    
                     let buttonsHTML = Object.keys(statusStyles).filter(s=>s!=='ว่าง').map(statusKey => {
                         const style = statusStyles[statusKey];
                         const borderClass = studentStatus === statusKey ? `ring-2 ring-offset-1 ring-blue-500` : '';
                         return `<button data-student-id="${student.id}" data-status="${statusKey}" class="status-btn ${style.buttonClass} ${borderClass} text-white text-xs font-semibold rounded-full w-12 py-2 transition-all">${style.text}</button>`;
                     }).join('');
-
-                    li.innerHTML = `
-                        <div class="flex items-center w-full">
-                            <div class="w-3 h-3 rounded-full mr-3 flex-shrink-0 ${currentStatusStyle.buttonClass.split(' ')[0]}"></div>
-                            <span class="text-slate-700 font-semibold">${student.name}</span>
-                        </div>
-                        <div class="flex space-x-1 items-center self-end sm:self-center flex-shrink-0">
-                            <div class="flex space-x-1">
-                                ${buttonsHTML}
-                            </div>
-                            <button data-student-id="${student.id}" class="delete-btn text-slate-400 hover:text-red-500 p-1 rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
-                        </div>`;
+                    li.innerHTML = `<div class="flex items-center w-full"><div class="w-3 h-3 rounded-full mr-3 flex-shrink-0 ${currentStatusStyle.buttonClass.split(' ')[0]}"></div><span class="text-slate-700 font-semibold">${student.name}</span></div><div class="flex space-x-1 items-center self-end sm:self-center flex-shrink-0"><div class="flex space-x-1">${buttonsHTML}</div><button data-student-id="${student.id}" class="delete-btn text-slate-400 hover:text-red-500 p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button></div>`;
                     studentListContainer.appendChild(li);
                 });
             }
             renderSummary(className);
         }
 
-        function renderSummary(className) { const dateString = getFormattedDate(currentDate); const classAttendance = attendanceData[dateString]?.[className] || {}; const summary = { 'มาเรียน': 0, 'ขาด': 0, 'ลา': 0, 'สาย': 0 }; const studentIdsInClass = schoolData[className].map(s => s.id); studentIdsInClass.forEach(id => { const status = classAttendance[id] || 'มาเรียน'; summary[status]++; }); attendanceSummaryContainer.innerHTML = ''; Object.keys(summary).forEach(statusKey => { const style = statusStyles[statusKey]; const count = summary[statusKey]; const div = document.createElement('div'); div.className = `p-2 rounded-md ${style.summaryClass}`; div.innerHTML = `<div class="font-bold">${count}</div><div class="text-xs">${style.text}</div>`; attendanceSummaryContainer.appendChild(div); }); }
-        const hideAddStudentModal = () => addStudentModal.classList.add('hidden');
-        function showAddStudentModal() { studentNameInput.value = ''; studentPrefixSelect.value = currentClassName.startsWith('มัธยม') ? 'นาย' : 'เด็กชาย'; addStudentModal.classList.remove('hidden'); studentNameInput.focus(); }
+        function renderSummary(className) { const dateString = getFormattedDate(currentDate); const classAttendance = attendanceData[dateString]?.[className] || {}; const summary = { 'มาเรียน': 0, 'ขาด': 0, 'ลา': 0, 'สาย': 0 }; const students = schoolData[className] || []; students.forEach(student => { const status = classAttendance[student.id] || 'มาเรียน'; summary[status]++; }); attendanceSummaryContainer.innerHTML = ''; Object.keys(summary).forEach(statusKey => { const style = statusStyles[statusKey]; const count = summary[statusKey]; const div = document.createElement('div'); div.className = `p-2 rounded-md ${style.summaryClass}`; div.innerHTML = `<div class="font-bold">${count}</div><div class="text-xs">${style.text}</div>`; attendanceSummaryContainer.appendChild(div); }); }
         
+        function createOrUpdateChart(className) { const canvasId = 'chart-' + className.replace(/[\s/]/g, '-'); const canvas = document.getElementById(canvasId); if (!canvas) return; const ctx = canvas.getContext('2d'); const dateString = getFormattedDate(currentDate); const classAttendance = attendanceData[dateString]?.[className] || {}; const summary = { 'มาเรียน': 0, 'ขาด': 0, 'ลา': 0, 'สาย': 0 }; const students = schoolData[className] || []; students.forEach(student => { const status = classAttendance[student.id] || 'มาเรียน'; summary[status]++; }); const chartData = { labels: Object.keys(summary), datasets: [{ data: Object.values(summary), backgroundColor: Object.values(statusStyles).filter(s=>s.text!=='ว่าง').map(s => s.color) }] }; if (charts[canvasId]) { charts[canvasId].data = chartData; charts[canvasId].update(); } else { charts[canvasId] = new Chart(ctx, { type: 'bar', data: chartData, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, plugins: { legend: { display: false } } } }); } }
+        
+        function generateReportTable() { const className = reportClassSelect.value; const month = parseInt(reportMonthSelect.value); const year = parseInt(reportYearSelect.value); const students = schoolData[className] || []; const daysInMonth = new Date(year, month + 1, 0).getDate(); let tableHTML = `<h2 class="text-xl font-bold mb-2 text-center">รายงานการมาเรียน ประจำเดือน ${reportMonthSelect.options[month].text} พ.ศ. ${year + 543}</h2>`; tableHTML += `<h3 class="text-lg font-semibold mb-4 text-center">ชั้น ${className}</h3>`; tableHTML += `<table class="w-full border-collapse text-xs text-center"><thead><tr class="bg-slate-100">`; tableHTML += `<th class="border p-1">ชื่อ-นามสกุล</th>`; for (let day = 1; day <= daysInMonth; day++) { tableHTML += `<th class="border p-1 w-6">${day}</th>`; } Object.keys(statusStyles).filter(s => s !== 'ว่าง').forEach(status => { tableHTML += `<th class="border p-1 bg-[${statusStyles[status].color}] text-white">${statusStyles[status].short}</th>`; }); tableHTML += `</tr></thead><tbody>`; if(students) { students.forEach(student => { const summary = { 'มาเรียน': 0, 'ขาด': 0, 'ลา': 0, 'สาย': 0 }; tableHTML += `<tr><td class="border p-1 text-left">${student.name}</td>`; for (let day = 1; day <= daysInMonth; day++) { const date = new Date(year, month, day); const dateString = getFormattedDate(date); const status = attendanceData[dateString]?.[className]?.[student.id] || 'ว่าง'; if (summary[status] !== undefined) summary[status]++; tableHTML += `<td class="border p-1" style="background-color:${statusStyles[status]?.color || '#fff'}">${statusStyles[status]?.short || '-'}</td>`; } Object.keys(summary).forEach(status => { tableHTML += `<td class="border p-1 font-semibold">${summary[status]}</td>`; }); tableHTML += `</tr>`; }); } tableHTML += `</tbody></table>`; reportTableContainer.innerHTML = tableHTML; }
+        
+        function printReport() { reportPrintArea.innerHTML = reportTableContainer.innerHTML; window.print(); reportPrintArea.innerHTML = ''; }
+        
+        function exportReportToCsv() { const className = reportClassSelect.value; const month = parseInt(reportMonthSelect.value); const year = parseInt(reportYearSelect.value); const students = schoolData[className] || []; const daysInMonth = new Date(year, month + 1, 0).getDate(); let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; const headers = ["ชื่อ-นามสกุล", ...Array.from({length: daysInMonth}, (_, i) => i + 1), ...Object.keys(statusStyles).filter(s => s !== 'ว่าง').map(s => statusStyles[s].text)]; csvContent += headers.join(',') + '\r\n'; if(students) { students.forEach(student => { const row = [student.name]; const summary = { 'มาเรียน': 0, 'ขาด': 0, 'ลา': 0, 'สาย': 0 }; for (let day = 1; day <= daysInMonth; day++) { const date = new Date(year, month, day); const dateString = getFormattedDate(date); const status = attendanceData[dateString]?.[className]?.[student.id] || 'ว่าง'; if (summary[status] !== undefined) summary[status]++; row.push(statusStyles[status]?.short || '-'); } row.push(...Object.values(summary)); csvContent += `"${row.join('","')}"\r\n`; }); } const encodedUri = encodeURI(csvContent); const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `report-${className.replace(/ /g,"_")}-${year}-${month+1}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+
+        // --- INITIALIZATION ---
+        async function initialize() {
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                classesCol = collection(db, `artifacts/${appId}/public/data/classes`);
+                attendanceCol = collection(db, `artifacts/${appId}/public/data/attendance`);
+
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                await seedInitialDataIfNeeded();
+                setupListeners();
+
+                datePicker.value = getFormattedDate(currentDate);
+                setupReportControls();
+                showView(classListView);
+                loadingOverlay.classList.add('hidden');
+
+            } catch (error) {
+                console.error("Firebase initialization failed:", error);
+                loadingOverlay.innerHTML = '<p class="text-red-500">การเชื่อมต่อฐานข้อมูลล้มเหลว</p>';
+            }
+        }
+
         // --- EVENT LISTENERS ---
-        document.addEventListener('DOMContentLoaded', () => {
-            datePicker.value = getFormattedDate(currentDate);
-            getOrInitAttendanceForDate(getFormattedDate(currentDate));
-            renderClassList();
-            setupReportControls();
-        });
         viewReportBtn.addEventListener('click', () => { generateReportTable(); showView(reportView); });
         backToDashboardBtn.addEventListener('click', () => showView(classListView));
         document.querySelectorAll('.report-control').forEach(el => el.addEventListener('change', generateReportTable));
         printReportBtn.addEventListener('click', printReport);
         exportCsvBtn.addEventListener('click', exportReportToCsv);
-        backButton.addEventListener('click', () => { currentClassName = null; showView(classListView); renderClassList(); });
-        datePicker.addEventListener('change', (e) => { const [year, month, day] = e.target.value.split('-').map(Number); currentDate = new Date(year, month - 1, day); getOrInitAttendanceForDate(getFormattedDate(currentDate)); renderClassList(); });
-        studentListContainer.addEventListener('click', (e) => { const statusBtn = e.target.closest('.status-btn'); const deleteBtn = e.target.closest('.delete-btn'); if (statusBtn) { const studentId = parseInt(statusBtn.dataset.studentId); const newStatus = statusBtn.dataset.status; const dateString = getFormattedDate(currentDate); attendanceData[dateString][currentClassName][studentId] = newStatus; renderStudentList(currentClassName); } if (deleteBtn) { const studentId = parseInt(deleteBtn.dataset.studentId); const studentToDelete = schoolData[currentClassName].find(s => s.id === studentId); showAlert('ยืนยันการลบ', `คุณต้องการลบ "${studentToDelete.name}" ออกจากระบบใช่หรือไม่? การกระทำนี้จะลบนักเรียนออกจากทุกชั้นเรียนและข้อมูลทั้งหมด`, [ { text: 'ยกเลิก', class: 'px-4 py-2 bg-slate-200 text-slate-800 rounded-lg hover:bg-slate-300' }, { text: 'ยืนยัน', class: 'px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600', onClick: () => { for(const className in schoolData) { schoolData[className] = schoolData[className].filter(s => s.id !== studentId); } for(const date in attendanceData) { if(attendanceData[date][currentClassName]) { delete attendanceData[date][currentClassName][studentId]; } } renderStudentList(currentClassName); }} ]); } });
+        backButton.addEventListener('click', () => { currentClassName = null; showView(classListView); });
+        
+        datePicker.addEventListener('change', async (e) => {
+            const [year, month, day] = e.target.value.split('-').map(Number);
+            currentDate = new Date(year, month - 1, day);
+            await getOrInitAttendanceForDate(getFormattedDate(currentDate));
+            setupListeners();
+            renderClassList();
+        });
+
+        studentListContainer.addEventListener('click', (e) => {
+            const statusBtn = e.target.closest('.status-btn');
+            const deleteBtn = e.target.closest('.delete-btn');
+            if (statusBtn) {
+                const studentId = parseInt(statusBtn.dataset.studentId);
+                const newStatus = statusBtn.dataset.status;
+                updateAttendanceStatus(currentClassName, studentId, newStatus);
+            }
+            if (deleteBtn) {
+                const studentId = parseInt(deleteBtn.dataset.studentId);
+                const studentToDelete = schoolData[currentClassName].find(s => s.id === studentId);
+                showAlert('ยืนยันการลบ', `คุณต้องการลบ "${studentToDelete.name}" ใช่หรือไม่?`, [
+                    { text: 'ยกเลิก', class: 'px-4 py-2 bg-slate-200 text-slate-800 rounded-lg hover:bg-slate-300' },
+                    { text: 'ยืนยัน', class: 'px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600', onClick: () => deleteStudent(currentClassName, studentId) }
+                ]);
+            }
+        });
+
+        saveStudent.addEventListener('click', () => {
+            const name = studentNameInput.value.trim();
+            const prefix = studentPrefixSelect.value;
+            if (name) {
+                addStudent(currentClassName, `${prefix} ${name}`);
+                hideAddStudentModal();
+            } else {
+                showAlert('ข้อมูลไม่ครบถ้วน', 'กรุณาใส่ชื่อ-นามสกุลของนักเรียน');
+            }
+        });
+        
         addStudentBtn.addEventListener('click', showAddStudentModal);
         cancelAddStudent.addEventListener('click', hideAddStudentModal);
-        saveStudent.addEventListener('click', () => { const name = studentNameInput.value.trim(); const prefix = studentPrefixSelect.value; if (name) { const newStudent = { id: Date.now(), name: `${prefix} ${name}` }; schoolData[currentClassName].push(newStudent); const dateString = getFormattedDate(currentDate); getOrInitAttendanceForDate(dateString)[currentClassName][newStudent.id] = 'มาเรียน'; renderStudentList(currentClassName); hideAddStudentModal(); } else { showAlert('ข้อมูลไม่ครบถ้วน', 'กรุณาใส่ชื่อ-นามสกุลของนักเรียน'); } });
+        
+        // Start the application
+        initialize();
+
     </script>
 </body>
 </html>
