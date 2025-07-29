@@ -24,7 +24,7 @@
 <body class="bg-slate-100 text-slate-800">
 
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-80 flex flex-col items-center justify-center z-50">
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 flex flex-col items-center justify-center z-50 p-4">
         <div class="loader"></div>
         <p class="mt-4 text-slate-600">กำลังเชื่อมต่อฐานข้อมูล...</p>
     </div>
@@ -94,27 +94,31 @@
     <script type="module">
         // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, addDoc, deleteDoc, onSnapshot, collection, query, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- FIREBASE SETUP ---
-        // These variables are provided by the environment.
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'student-attendance-app-th';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC9bwxwU1QhVAQj10fRoWOc24DYTguQImY",
+            authDomain: "check-name-25785.firebaseapp.com",
+            projectId: "check-name-25785",
+            storageBucket: "check-name-25785.appspot.com",
+            messagingSenderId: "194421764858",
+            appId: "1:194421764858:web:e3d5e6dd15d524281f4f43"
+        };
         
+        const appId = firebaseConfig.projectId; // Use projectId for the collection path
         let db, auth;
         let classesCol, attendanceCol;
 
         // --- LOCAL DATA CACHE ---
-        // We keep a local copy of data for faster UI rendering
         let schoolData = {};
         let attendanceData = {};
 
         // --- DOM ELEMENTS ---
         const loadingOverlay = document.getElementById('loadingOverlay');
         const allViews = [document.getElementById('classListView'), document.getElementById('studentListView'), document.getElementById('reportView')];
-        // ... (rest of the DOM elements are the same as before)
         const classListView = document.getElementById('classListView');
         const studentListView = document.getElementById('studentListView');
         const reportView = document.getElementById('reportView');
@@ -386,11 +390,7 @@
                 classesCol = collection(db, `artifacts/${appId}/public/data/classes`);
                 attendanceCol = collection(db, `artifacts/${appId}/public/data/attendance`);
 
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                await signInAnonymously(auth);
                 
                 await seedInitialDataIfNeeded();
                 setupListeners();
@@ -402,7 +402,18 @@
 
             } catch (error) {
                 console.error("Firebase initialization failed:", error);
-                loadingOverlay.innerHTML = '<p class="text-red-500">การเชื่อมต่อฐานข้อมูลล้มเหลว</p>';
+                let errorMessage = '<p class="font-semibold">การเชื่อมต่อฐานข้อมูลล้มเหลว</p>';
+                if (error.code === 'auth/configuration-not-found' || error.code === 'auth/admin-restricted-operation') {
+                    errorMessage = `
+                        <p class="font-semibold text-lg">การเชื่อมต่อฐานข้อมูลล้มเหลว</p>
+                        <p class="mt-2 text-slate-700">รหัสข้อผิดพลาด: <code class="bg-slate-200 px-1 rounded">${error.code}</code></p>
+                        <p class="mt-4 text-slate-600"><b>สาเหตุที่เป็นไปได้มากที่สุด:</b></p>
+                        <p class="text-slate-600 text-left ml-4">ยังไม่ได้เปิดใช้งาน "การลงชื่อเข้าใช้แบบไม่ระบุตัวตน" (Anonymous) ในโปรเจกต์ Firebase ของคุณ</p>
+                        <p class="mt-4 text-slate-600"><b>วิธีแก้ไข:</b></p>
+                        <p class="text-slate-600 text-left ml-4">1. ไปที่ Firebase Console > Authentication<br>2. เลือกแท็บ "Sign-in method"<br>3. คลิก "Anonymous" และเปิดใช้งาน</p>
+                    `;
+                }
+                loadingOverlay.innerHTML = `<div class="text-red-500 text-center p-4">${errorMessage}</div>`;
             }
         }
 
