@@ -30,7 +30,6 @@
     </div>
 
     <div id="app-container" class="max-w-6xl mx-auto p-4 min-h-screen">
-        <!-- Views (Class List, Student List, Report) go here, same as before -->
         <!-- View 1: Class List -->
         <div id="classListView" class="view w-full">
             <header class="bg-white shadow-md rounded-xl p-6 mb-6">
@@ -45,15 +44,19 @@
                 </div>
             </header>
             <main>
-                <h2 id="summaryHeader" class="text-lg font-semibold mb-4 text-slate-700">สรุปข้อมูลรายชั้นเรียน</h2>
-                <div id="classList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+                <h2 id="summaryHeader" class="text-lg font-semibold mb-4 text-slate-700">เลือกชั้นเรียน</h2>
+                <div id="classList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
             </main>
         </div>
 
         <!-- View 2: Student List -->
         <div id="studentListView" class="view w-full hidden">
             <header class="bg-white shadow-md rounded-xl p-4 mb-4 sticky top-4 z-20">
-                <div class="flex items-center justify-between"><button id="backButton" class="text-blue-600 hover:text-blue-800 font-semibold flex items-center p-2 rounded-md hover:bg-slate-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>กลับ</button><h1 id="classNameHeader" class="text-xl font-bold text-center text-blue-600"></h1><button id="addStudentBtn" class="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 flex items-center font-semibold text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>เพิ่ม</button></div>
+                <div class="flex items-center justify-between">
+                    <button id="backButton" class="text-blue-600 hover:text-blue-800 font-semibold flex items-center p-2 rounded-md hover:bg-slate-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>กลับ</button>
+                    <h1 id="classNameHeader" class="text-xl font-bold text-center text-blue-600"></h1>
+                    <button id="addStudentBtn" class="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 flex items-center font-semibold text-sm"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>เพิ่ม</button>
+                </div>
                 <div id="attendanceSummary" class="text-xs grid grid-cols-4 gap-2 text-center mt-4"></div>
             </header>
             <main><ul id="studentList" class="space-y-3"></ul></main>
@@ -61,7 +64,7 @@
 
         <!-- View 3: Report View -->
         <div id="reportView" class="view w-full hidden">
-            <header class="bg-white shadow-md rounded-xl p-4 mb-6">
+             <header class="bg-white shadow-md rounded-xl p-4 mb-6">
                 <div class="flex items-center justify-between mb-4">
                     <button id="backToDashboardBtn" class="text-blue-600 hover:text-blue-800 font-semibold flex items-center p-2 rounded-md hover:bg-slate-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>กลับ</button>
                     <h1 class="text-xl font-bold text-center text-blue-600">รายงานสรุปรายเดือน</h1>
@@ -86,7 +89,7 @@
     </div>
     
     <div id="reportPrintArea" class="hidden"></div>
-    <!-- Modals are the same as before -->
+    <!-- Modals -->
     <div id="addStudentModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"><div class="modal-content bg-white rounded-xl shadow-lg p-6 w-full max-w-sm"><h2 class="text-lg font-bold mb-4">เพิ่มนักเรียนใหม่</h2><div class="mb-4"><label for="studentNameInput" class="block text-sm font-medium text-slate-700 mb-1">ชื่อ-นามสกุล</label><input type="text" id="studentNameInput" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="เช่น สมศักดิ์ รักเรียน"></div><div class="mb-4"><label for="studentPrefixSelect" class="block text-sm font-medium text-slate-700 mb-1">คำนำหน้าชื่อ</label><select id="studentPrefixSelect" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><option>เด็กชาย</option><option>เด็กหญิง</option><option>นาย</option><option>นางสาว</option></select></div><div class="flex justify-end space-x-3"><button id="cancelAddStudent" class="px-4 py-2 bg-slate-200 text-slate-800 rounded-lg hover:bg-slate-300">ยกเลิก</button><button id="saveStudent" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">บันทึก</button></div></div></div>
     <div id="alertModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"><div class="modal-content bg-white rounded-xl shadow-lg p-6 w-full max-w-sm"><h2 id="alertTitle" class="text-lg font-bold mb-4"></h2><p id="alertMessage" class="text-slate-600 mb-6"></p><div id="alertButtons" class="flex justify-end space-x-3"></div></div></div>
 
@@ -98,7 +101,6 @@
         import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- FIREBASE SETUP ---
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyC9bwxwU1QhVAQj10fRoWOc24DYTguQImY",
             authDomain: "check-name-25785.firebaseapp.com",
@@ -108,7 +110,7 @@
             appId: "1:194421764858:web:e3d5e6dd15d524281f4f43"
         };
         
-        const appId = firebaseConfig.projectId; // Use projectId for the collection path
+        const appId = firebaseConfig.projectId;
         let db, auth;
         let classesCol, attendanceCol;
 
@@ -152,7 +154,6 @@
         // --- STATE & CONFIG ---
         let currentDate = new Date();
         let currentClassName = null;
-        let charts = {};
         const statusStyles = {
             'มาเรียน': { text: 'มาเรียน', short: 'ม', color: '#22c55e', buttonClass: 'bg-green-500 hover:bg-green-600', summaryClass: 'bg-green-100 text-green-800' },
             'ขาด': { text: 'ขาด', short: 'ข', color: '#ef4444', buttonClass: 'bg-red-500 hover:bg-red-600', summaryClass: 'bg-red-100 text-red-800' },
@@ -160,111 +161,20 @@
             'สาย': { text: 'สาย', short: 'ส', color: '#f97316', buttonClass: 'bg-orange-400 hover:bg-orange-500', summaryClass: 'bg-orange-100 text-orange-800' },
             'ว่าง': { text: 'ว่าง', short: '-', color: '#ffffff' }
         };
-
         const getFormattedDate = (date) => date.toISOString().split('T')[0];
 
-        // --- VIEW & MODAL & UI FUNCTIONS (DEFINED BEFORE INITIALIZE) ---
-        function showView(viewToShow) {
-            allViews.forEach(view => {
-                if (view === viewToShow) {
-                    view.classList.remove('hidden');
-                } else {
-                    view.classList.add('hidden');
-                }
-            });
-            window.scrollTo(0, 0);
-        }
-
-        function showAlert(title, message, buttons) {
-            alertTitle.textContent = title;
-            alertMessage.textContent = message;
-            alertButtons.innerHTML = '';
-            if (buttons) {
-                buttons.forEach(btn => {
-                    const buttonEl = document.createElement('button');
-                    buttonEl.textContent = btn.text;
-                    buttonEl.className = btn.class;
-                    buttonEl.onclick = () => {
-                        hideAlertModal();
-                        if (btn.onClick) btn.onClick();
-                    };
-                    alertButtons.appendChild(buttonEl);
-                });
-            } else {
-                const okButton = document.createElement('button');
-                okButton.textContent = 'ตกลง';
-                okButton.className = 'px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600';
-                okButton.onclick = hideAlertModal;
-                alertButtons.appendChild(okButton);
-            }
-            alertModal.classList.remove('hidden');
-        }
-
+        // --- VIEW & MODAL & UI FUNCTIONS ---
+        function showView(viewToShow) { allViews.forEach(view => view === viewToShow ? view.classList.remove('hidden') : view.classList.add('hidden')); window.scrollTo(0, 0); }
+        function showAlert(title, message, buttons) { alertTitle.textContent = title; alertMessage.textContent = message; alertButtons.innerHTML = ''; if (buttons) { buttons.forEach(btn => { const buttonEl = document.createElement('button'); buttonEl.textContent = btn.text; buttonEl.className = btn.class; buttonEl.onclick = () => { hideAlertModal(); if (btn.onClick) btn.onClick(); }; alertButtons.appendChild(buttonEl); }); } else { const okButton = document.createElement('button'); okButton.textContent = 'ตกลง'; okButton.className = 'px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600'; okButton.onclick = hideAlertModal; alertButtons.appendChild(okButton); } alertModal.classList.remove('hidden'); }
         const hideAlertModal = () => alertModal.classList.add('hidden');
-
-        function showAddStudentModal() {
-            studentNameInput.value = '';
-            studentPrefixSelect.value = currentClassName.startsWith('มัธยม') ? 'นาย' : 'เด็กชาย';
-            addStudentModal.classList.remove('hidden');
-            studentNameInput.focus();
-        }
-
+        function showAddStudentModal() { studentNameInput.value = ''; studentPrefixSelect.value = currentClassName.startsWith('มัธยม') ? 'นาย' : 'เด็กชาย'; addStudentModal.classList.remove('hidden'); studentNameInput.focus(); }
         const hideAddStudentModal = () => addStudentModal.classList.add('hidden');
-
-        function setupReportControls() {
-            reportClassSelect.innerHTML = Object.keys(schoolData).sort((a, b) => a.localeCompare(b, 'th')).map(c => `<option value="${c}">${c}</option>`).join('');
-            const months = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
-            reportMonthSelect.innerHTML = months.map((m, i) => `<option value="${i}">${m}</option>`).join('');
-            const currentYear = new Date().getFullYear();
-            reportYearSelect.innerHTML = [currentYear, currentYear - 1].map(y => `<option value="${y}">${y + 543}</option>`).join('');
-            reportMonthSelect.value = currentDate.getMonth();
-            reportYearSelect.value = currentDate.getFullYear();
-        }
-
-        // --- FIRESTORE DATA FUNCTIONS ---
-        async function addStudent(className, studentName) {
-            const classRef = doc(db, `artifacts/${appId}/public/data/classes/${className}`);
-            const newStudent = { id: Date.now(), name: studentName };
-            const classDoc = await getDoc(classRef);
-            const students = classDoc.exists() ? classDoc.data().students : [];
-            students.push(newStudent);
-            await setDoc(classRef, { students: students }, { merge: true });
-        }
-
-        async function deleteStudent(className, studentId) {
-            const classRef = doc(db, `artifacts/${appId}/public/data/classes/${className}`);
-            const classDoc = await getDoc(classRef);
-            if (classDoc.exists()) {
-                const students = classDoc.data().students.filter(s => s.id !== studentId);
-                await setDoc(classRef, { students: students });
-            }
-        }
-
-        async function updateAttendanceStatus(className, studentId, status) {
-            const dateString = getFormattedDate(currentDate);
-            const attendanceRef = doc(db, `artifacts/${appId}/public/data/attendance/${dateString}`);
-            await setDoc(attendanceRef, { [className]: { [studentId]: status } }, { merge: true });
-        }
         
-        async function getOrInitAttendanceForDate(dateString) {
-            const attendanceRef = doc(db, `artifacts/${appId}/public/data/attendance/${dateString}`);
-            const docSnap = await getDoc(attendanceRef);
-            if (!docSnap.exists()) {
-                let initialAttendance = {};
-                for (const className in schoolData) {
-                    initialAttendance[className] = {};
-                    if(schoolData[className] && schoolData[className].length > 0) {
-                        schoolData[className].forEach(student => {
-                            initialAttendance[className][student.id] = 'มาเรียน';
-                        });
-                    }
-                }
-                await setDoc(attendanceRef, initialAttendance);
-                attendanceData[dateString] = initialAttendance;
-            } else {
-                 attendanceData[dateString] = docSnap.data();
-            }
-        }
+        // --- FIRESTORE DATA FUNCTIONS ---
+        async function addStudent(className, studentName) { const classRef = doc(db, `artifacts/${appId}/public/data/classes/${className}`); const newStudent = { id: Date.now(), name: studentName }; const classDoc = await getDoc(classRef); const students = classDoc.exists() ? classDoc.data().students : []; students.push(newStudent); await setDoc(classRef, { students: students }, { merge: true }); }
+        async function deleteStudent(className, studentId) { const classRef = doc(db, `artifacts/${appId}/public/data/classes/${className}`); const classDoc = await getDoc(classRef); if (classDoc.exists()) { const students = classDoc.data().students.filter(s => s.id !== studentId); await setDoc(classRef, { students: students }); } }
+        async function updateAttendanceStatus(className, studentId, status) { const dateString = getFormattedDate(currentDate); const attendanceRef = doc(db, `artifacts/${appId}/public/data/attendance/${dateString}`); await setDoc(attendanceRef, { [className]: { [studentId]: status } }, { merge: true }); }
+        async function getOrInitAttendanceForDate(dateString) { const attendanceRef = doc(db, `artifacts/${appId}/public/data/attendance/${dateString}`); const docSnap = await getDoc(attendanceRef); if (!docSnap.exists()) { let initialAttendance = {}; for (const className in schoolData) { initialAttendance[className] = {}; if(schoolData[className] && schoolData[className].length > 0) { schoolData[className].forEach(student => { initialAttendance[className][student.id] = 'มาเรียน'; }); } } await setDoc(attendanceRef, initialAttendance); attendanceData[dateString] = initialAttendance; } else { attendanceData[dateString] = docSnap.data(); } }
 
         // --- DATA SEEDING ---
         async function seedInitialDataIfNeeded() {
@@ -273,18 +183,21 @@
                 console.log("No classes found. Seeding initial data...");
                 loadingOverlay.querySelector('p').textContent = 'กำลังสร้างข้อมูลเริ่มต้น...';
                 const batch = writeBatch(db);
-                const initialClasses = {
-                    'อนุบาล 2': [], 'อนุบาล 3': [], 'ประถมศึกษาปีที่ 1': [], 'ประถมศึกษาปีที่ 2': [], 
-                    'ประถมศึกษาปีที่ 3': [], 'ประถมศึกษาปีที่ 4': [], 'ประถมศึกษาปีที่ 5': [], 'ประถมศึกษาปีที่ 6': [],
-                    'มัธยมศึกษาปีที่ 1': [], 'มัธยมศึกษาปีที่ 2': [], 'มัธยมศึกษาปีที่ 3': [],
-                };
-                
+                let studentIdCounter = 101;
+
+                const anuban2Students = [ "เด็กชายธีรภัทร หนูชูสุข", "เด็กหญิงนูรอัยนีย์ รอเกตุ", "เด็กหญิงฐิติกร มาลิยัน", "เด็กชายเจษฎา เหมสัน", "เด็กชายปัญณวิชน์ ยาง๊ะ", "เด็กชายมาร์ติน เตาวะโต", "เด็กหญิงจิณัฐตา สังข์แทน", "เด็กหญิงวริศรา หมาดโร้ย", "เด็กหญิงลลิตา พิใส", "เด็กหญิงนันทิพร ชูรักษ์", "เด็กหญิงชาลิสา เจ๊ะแอ", "เด็กหญิงศิรัญญา หมัดสธรรม", "เด็กหญิงวราทิพย์ จันทรวรานนท์" ].map(name => ({ id: studentIdCounter++, name: name }));
+                const anuban2Ref = doc(db, `artifacts/${appId}/public/data/classes/อนุบาล 2`);
+                batch.set(anuban2Ref, { students: anuban2Students });
+
+                const anuban3Students = [ "เด็กชายฟาคิร เทศอาเส็น", "เด็กชายภูติภัทร์ อินรัศมี", "เด็กชายณัฐซารัณ ทิ้งหมาด", "เด็กชายอนุรักษ์ วุ่นนุรัตน์", "เด็กหญิงญารินดา หลงสลำ", "เด็กหญิงนูรอัยรีน กาเส็มสัน", "เด็กหญิงนันท์นลิน กาเส็มส๊ะ", "เด็กหญิงรัณดา สันสบู่", "เด็กหญิงไนร่า มาลียัน", "เด็กหญิงซาฟีร่า ผลบุญ", "เด็กชายดุษฎี ปูหยัง", "เด็กหญิงมารีญา คงแสง" ].map(name => ({ id: studentIdCounter++, name: name }));
+                const anuban3Ref = doc(db, `artifacts/${appId}/public/data/classes/อนุบาล 3`);
+                batch.set(anuban3Ref, { students: anuban3Students });
+
+                const otherClasses = { 'ประถมศึกษาปีที่ 1': [], 'ประถมศึกษาปีที่ 2': [], 'ประถมศึกษาปีที่ 3': [], 'ประถมศึกษาปีที่ 4': [], 'ประถมศึกษาปีที่ 5': [], 'ประถมศึกษาปีที่ 6': [], 'มัธยมศึกษาปีที่ 1': [], 'มัธยมศึกษาปีที่ 2': [], 'มัธยมศึกษาปีที่ 3': [] };
                 const sampleMaleNames = ["สมชาย", "มานะ", "วีระ", "กิตติ", "ธนพล", "ณัฐวุฒิ", "พงศกร", "จิรายุ", "กรวิชญ์"];
                 const sampleFemaleNames = ["สมหญิง", "ชูใจ", "ปิติ", "จิราพร", "พิมพ์ชนก", "ขวัญข้าว", "วิภาวี", "ปภาวรินทร์"];
                 const sampleSurnames = ["รักเรียน", "ตั้งใจ", "อดทน", "ยินดี", "กล้าหาญ", "ใฝ่รู้", "แสงทอง", "ใจดี", "ศรีสุข", "คงมั่น"];
-                let studentIdCounter = 101;
-
-                for (const className in initialClasses) {
+                for (const className in otherClasses) {
                     const studentCount = Math.floor(Math.random() * 6) + 5;
                     let students = [];
                     for (let i = 0; i < studentCount; i++) {
@@ -307,40 +220,67 @@
         function setupListeners() {
             onSnapshot(query(classesCol), (snapshot) => {
                 let newSchoolData = {};
-                snapshot.forEach(doc => {
-                    newSchoolData[doc.id] = doc.data().students || [];
-                });
+                snapshot.forEach(doc => { newSchoolData[doc.id] = doc.data().students || []; });
                 schoolData = newSchoolData;
-                if (classListView.offsetParent !== null) renderClassList();
-                if (studentListView.offsetParent !== null) renderStudentList(currentClassName);
-                if (reportView.offsetParent !== null) generateReportTable();
+                renderClassList();
+                if (currentClassName) renderStudentList(currentClassName);
             });
-
             const dateString = getFormattedDate(currentDate);
             const attendanceDocRef = doc(attendanceCol, dateString);
             onSnapshot(attendanceDocRef, (doc) => {
                 attendanceData[dateString] = doc.exists() ? doc.data() : {};
-                 if (classListView.offsetParent !== null) renderClassList();
-                 if (studentListView.offsetParent !== null) renderStudentList(currentClassName);
+                renderClassList();
+                if (currentClassName) renderStudentList(currentClassName);
             });
         }
 
         // --- UI Rendering Functions ---
         function renderClassList() {
             classListContainer.innerHTML = '';
-            summaryHeader.textContent = `สรุปข้อมูลรายชั้นเรียน วันที่ ${currentDate.toLocaleDateString('th-TH', { dateStyle: 'long' })}`;
-            const sortedClassNames = Object.keys(schoolData).sort((a, b) => a.localeCompare(b, 'th'));
-
+            summaryHeader.textContent = `เลือกชั้นเรียน ประจำวันที่ ${currentDate.toLocaleDateString('th-TH', { dateStyle: 'long' })}`;
+            const customOrder = ['อนุบาล 2', 'อนุบาล 3'];
+            const sortedClassNames = Object.keys(schoolData).sort((a, b) => {
+                const indexA = customOrder.indexOf(a); const indexB = customOrder.indexOf(b);
+                if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                if (indexA !== -1) return -1; if (indexB !== -1) return 1;
+                return a.localeCompare(b, 'th');
+            });
             sortedClassNames.forEach(className => {
                 const students = schoolData[className] || [];
                 const studentCount = students.length;
-                const canvasId = 'chart-' + className.replace(/[\s/]/g, '-');
+
+                const dateString = getFormattedDate(currentDate);
+                const classAttendance = attendanceData[dateString]?.[className] || {};
+                const summary = { 'มาเรียน': 0, 'ขาด': 0, 'ลา': 0, 'สาย': 0 };
+                students.forEach(student => {
+                    const status = classAttendance[student.id] || 'มาเรียน';
+                    if (summary[status] !== undefined) summary[status]++;
+                });
+
                 const card = document.createElement('div');
-                card.className = 'bg-white p-4 rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer flex flex-col';
-                card.innerHTML = `<div><h3 class="font-bold text-lg text-slate-800">${className}</h3><p class="text-sm text-slate-500">${studentCount} คน</p></div><div class="mt-4 h-32 flex-grow"><canvas id="${canvasId}"></canvas></div>`;
+                let cardColors = '';
+                if (className.startsWith('อนุบาล')) cardColors = 'bg-pink-500 hover:bg-pink-600 text-white';
+                else if (className.startsWith('ประถม')) cardColors = 'bg-sky-500 hover:bg-sky-600 text-white';
+                else if (className.startsWith('มัธยม')) cardColors = 'bg-indigo-500 hover:bg-indigo-600 text-white';
+                else cardColors = 'bg-slate-500 hover:bg-slate-600 text-white';
+
+                card.className = `p-3 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between ${cardColors}`;
+                card.innerHTML = `
+                    <div>
+                        <h3 class="font-bold text-md">${className}</h3>
+                        <p class="text-sm text-white/80 mt-1">${studentCount} คน</p>
+                    </div>
+                    <div class="mt-2 pt-2 border-t border-white/30 text-xs font-semibold">
+                        <div class="flex justify-around items-center">
+                            <span class="flex items-center" title="มาเรียน"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>${summary['มาเรียน']}</span>
+                            <span class="flex items-center" title="ลา"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path d="M8.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l2-2a1 1 0 00-1.414-1.414L11 8.586V3a1 1 0 10-2 0v5.586L8.707 7.293zM3 9a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" /></svg>${summary['ลา']}</span>
+                            <span class="flex items-center" title="สาย"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" /></svg>${summary['สาย']}</span>
+                            <span class="flex items-center" title="ขาด"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>${summary['ขาด']}</span>
+                        </div>
+                    </div>
+                `;
                 card.addEventListener('click', () => { currentClassName = className; renderStudentList(className); showView(studentListView); });
                 classListContainer.appendChild(card);
-                setTimeout(() => createOrUpdateChart(className), 0);
             });
         }
         
@@ -372,12 +312,10 @@
 
         function renderSummary(className) { const dateString = getFormattedDate(currentDate); const classAttendance = attendanceData[dateString]?.[className] || {}; const summary = { 'มาเรียน': 0, 'ขาด': 0, 'ลา': 0, 'สาย': 0 }; const students = schoolData[className] || []; students.forEach(student => { const status = classAttendance[student.id] || 'มาเรียน'; summary[status]++; }); attendanceSummaryContainer.innerHTML = ''; Object.keys(summary).forEach(statusKey => { const style = statusStyles[statusKey]; const count = summary[statusKey]; const div = document.createElement('div'); div.className = `p-2 rounded-md ${style.summaryClass}`; div.innerHTML = `<div class="font-bold">${count}</div><div class="text-xs">${style.text}</div>`; attendanceSummaryContainer.appendChild(div); }); }
         
-        function createOrUpdateChart(className) { const canvasId = 'chart-' + className.replace(/[\s/]/g, '-'); const canvas = document.getElementById(canvasId); if (!canvas) return; const ctx = canvas.getContext('2d'); const dateString = getFormattedDate(currentDate); const classAttendance = attendanceData[dateString]?.[className] || {}; const summary = { 'มาเรียน': 0, 'ขาด': 0, 'ลา': 0, 'สาย': 0 }; const students = schoolData[className] || []; students.forEach(student => { const status = classAttendance[student.id] || 'มาเรียน'; summary[status]++; }); const chartData = { labels: Object.keys(summary), datasets: [{ data: Object.values(summary), backgroundColor: Object.values(statusStyles).filter(s=>s.text!=='ว่าง').map(s => s.color) }] }; if (charts[canvasId]) { charts[canvasId].data = chartData; charts[canvasId].update(); } else { charts[canvasId] = new Chart(ctx, { type: 'bar', data: chartData, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, plugins: { legend: { display: false } } } }); } }
-        
+        // --- Report functions are the same ---
+        function setupReportControls() { const customOrder = ['อนุบาล 2', 'อนุบาล 3']; const sortedClassNamesForReport = Object.keys(schoolData).sort((a, b) => { const indexA = customOrder.indexOf(a); const indexB = customOrder.indexOf(b); if (indexA !== -1 && indexB !== -1) return indexA - indexB; if (indexA !== -1) return -1; if (indexB !== -1) return 1; return a.localeCompare(b, 'th'); }); reportClassSelect.innerHTML = sortedClassNamesForReport.map(c => `<option value="${c}">${c}</option>`).join(''); const months = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"]; reportMonthSelect.innerHTML = months.map((m, i) => `<option value="${i}">${m}</option>`).join(''); const currentYear = new Date().getFullYear(); reportYearSelect.innerHTML = [currentYear, currentYear - 1].map(y => `<option value="${y}">${y + 543}</option>`).join(''); reportMonthSelect.value = currentDate.getMonth(); reportYearSelect.value = currentDate.getFullYear(); }
         function generateReportTable() { const className = reportClassSelect.value; const month = parseInt(reportMonthSelect.value); const year = parseInt(reportYearSelect.value); const students = schoolData[className] || []; const daysInMonth = new Date(year, month + 1, 0).getDate(); let tableHTML = `<h2 class="text-xl font-bold mb-2 text-center">รายงานการมาเรียน ประจำเดือน ${reportMonthSelect.options[month].text} พ.ศ. ${year + 543}</h2>`; tableHTML += `<h3 class="text-lg font-semibold mb-4 text-center">ชั้น ${className}</h3>`; tableHTML += `<table class="w-full border-collapse text-xs text-center"><thead><tr class="bg-slate-100">`; tableHTML += `<th class="border p-1">ชื่อ-นามสกุล</th>`; for (let day = 1; day <= daysInMonth; day++) { tableHTML += `<th class="border p-1 w-6">${day}</th>`; } Object.keys(statusStyles).filter(s => s !== 'ว่าง').forEach(status => { tableHTML += `<th class="border p-1 bg-[${statusStyles[status].color}] text-white">${statusStyles[status].short}</th>`; }); tableHTML += `</tr></thead><tbody>`; if(students) { students.forEach(student => { const summary = { 'มาเรียน': 0, 'ขาด': 0, 'ลา': 0, 'สาย': 0 }; tableHTML += `<tr><td class="border p-1 text-left">${student.name}</td>`; for (let day = 1; day <= daysInMonth; day++) { const date = new Date(year, month, day); const dateString = getFormattedDate(date); const status = attendanceData[dateString]?.[className]?.[student.id] || 'ว่าง'; if (summary[status] !== undefined) summary[status]++; tableHTML += `<td class="border p-1" style="background-color:${statusStyles[status]?.color || '#fff'}">${statusStyles[status]?.short || '-'}</td>`; } Object.keys(summary).forEach(status => { tableHTML += `<td class="border p-1 font-semibold">${summary[status]}</td>`; }); tableHTML += `</tr>`; }); } tableHTML += `</tbody></table>`; reportTableContainer.innerHTML = tableHTML; }
-        
         function printReport() { reportPrintArea.innerHTML = reportTableContainer.innerHTML; window.print(); reportPrintArea.innerHTML = ''; }
-        
         function exportReportToCsv() { const className = reportClassSelect.value; const month = parseInt(reportMonthSelect.value); const year = parseInt(reportYearSelect.value); const students = schoolData[className] || []; const daysInMonth = new Date(year, month + 1, 0).getDate(); let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; const headers = ["ชื่อ-นามสกุล", ...Array.from({length: daysInMonth}, (_, i) => i + 1), ...Object.keys(statusStyles).filter(s => s !== 'ว่าง').map(s => statusStyles[s].text)]; csvContent += headers.join(',') + '\r\n'; if(students) { students.forEach(student => { const row = [student.name]; const summary = { 'มาเรียน': 0, 'ขาด': 0, 'ลา': 0, 'สาย': 0 }; for (let day = 1; day <= daysInMonth; day++) { const date = new Date(year, month, day); const dateString = getFormattedDate(date); const status = attendanceData[dateString]?.[className]?.[student.id] || 'ว่าง'; if (summary[status] !== undefined) summary[status]++; row.push(statusStyles[status]?.short || '-'); } row.push(...Object.values(summary)); csvContent += `"${row.join('","')}"\r\n`; }); } const encodedUri = encodeURI(csvContent); const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `report-${className.replace(/ /g,"_")}-${year}-${month+1}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
 
         // --- INITIALIZATION ---
@@ -386,39 +324,26 @@
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-
                 classesCol = collection(db, `artifacts/${appId}/public/data/classes`);
                 attendanceCol = collection(db, `artifacts/${appId}/public/data/attendance`);
-
                 await signInAnonymously(auth);
-                
                 await seedInitialDataIfNeeded();
                 setupListeners();
-
                 datePicker.value = getFormattedDate(currentDate);
-                setupReportControls();
                 showView(classListView);
                 loadingOverlay.classList.add('hidden');
-
             } catch (error) {
                 console.error("Firebase initialization failed:", error);
                 let errorMessage = '<p class="font-semibold">การเชื่อมต่อฐานข้อมูลล้มเหลว</p>';
                 if (error.code === 'auth/configuration-not-found' || error.code === 'auth/admin-restricted-operation') {
-                    errorMessage = `
-                        <p class="font-semibold text-lg">การเชื่อมต่อฐานข้อมูลล้มเหลว</p>
-                        <p class="mt-2 text-slate-700">รหัสข้อผิดพลาด: <code class="bg-slate-200 px-1 rounded">${error.code}</code></p>
-                        <p class="mt-4 text-slate-600"><b>สาเหตุที่เป็นไปได้มากที่สุด:</b></p>
-                        <p class="text-slate-600 text-left ml-4">ยังไม่ได้เปิดใช้งาน "การลงชื่อเข้าใช้แบบไม่ระบุตัวตน" (Anonymous) ในโปรเจกต์ Firebase ของคุณ</p>
-                        <p class="mt-4 text-slate-600"><b>วิธีแก้ไข:</b></p>
-                        <p class="text-slate-600 text-left ml-4">1. ไปที่ Firebase Console > Authentication<br>2. เลือกแท็บ "Sign-in method"<br>3. คลิก "Anonymous" และเปิดใช้งาน</p>
-                    `;
+                    errorMessage = `<p class="font-semibold text-lg">การเชื่อมต่อฐานข้อมูลล้มเหลว</p><p class="mt-2 text-slate-700">รหัสข้อผิดพลาด: <code class="bg-slate-200 px-1 rounded">${error.code}</code></p><p class="mt-4 text-slate-600"><b>สาเหตุที่เป็นไปได้มากที่สุด:</b></p><p class="text-slate-600 text-left ml-4">ยังไม่ได้เปิดใช้งาน "การลงชื่อเข้าใช้แบบไม่ระบุตัวตน" (Anonymous) ในโปรเจกต์ Firebase ของคุณ</p><p class="mt-4 text-slate-600"><b>วิธีแก้ไข:</b></p><p class="text-slate-600 text-left ml-4">1. ไปที่ Firebase Console > Authentication<br>2. เลือกแท็บ "Sign-in method"<br>3. คลิก "Anonymous" และเปิดใช้งาน</p>`;
                 }
                 loadingOverlay.innerHTML = `<div class="text-red-500 text-center p-4">${errorMessage}</div>`;
             }
         }
 
         // --- EVENT LISTENERS ---
-        viewReportBtn.addEventListener('click', () => { generateReportTable(); showView(reportView); });
+        viewReportBtn.addEventListener('click', () => { setupReportControls(); generateReportTable(); showView(reportView); });
         backToDashboardBtn.addEventListener('click', () => showView(classListView));
         document.querySelectorAll('.report-control').forEach(el => el.addEventListener('change', generateReportTable));
         printReportBtn.addEventListener('click', printReport);
